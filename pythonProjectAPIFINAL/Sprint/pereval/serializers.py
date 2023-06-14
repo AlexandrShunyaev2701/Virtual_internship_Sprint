@@ -43,7 +43,7 @@ class PerevalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pereval
         fields = [
-            'status', 'beauty_title', 'title', 'other_titles',
+            'pk', 'status', 'beauty_title', 'title', 'other_titles',
             'connect', 'user', 'coord', 'level', 'images'
         ]
 
@@ -63,6 +63,5 @@ class PerevalSerializer(serializers.ModelSerializer):
 
         pereval = Pereval.objects.create(**validated_data, user=user, coord=coord, level=level, images=images)
         return pereval
-
 
 
