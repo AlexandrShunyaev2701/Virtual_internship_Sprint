@@ -40,6 +40,7 @@ class PerevalSerializer(serializers.ModelSerializer):
     coord = CoordsSerializer()
     level = LevelSerializer()
     images = ImagesSerializer()
+
     class Meta:
         model = Pereval
         fields = [
@@ -63,5 +64,18 @@ class PerevalSerializer(serializers.ModelSerializer):
 
         pereval = Pereval.objects.create(**validated_data, user=user, coord=coord, level=level, images=images)
         return pereval
+
+    def update(self, instance, validated_data):
+        instance.coord = validated_data.get('coord', instance.coord)
+        instance.level = validated_data.get('level', instance.level)
+        instance.image = validated_data.get('image', instance.image)
+        instance.status = validated_data.get('status', instance.image)
+        instance.beauty_title = validated_data.get('beauty_title', instance.beauty_title)
+        instance.title = validated_data.get('title', instance.title)
+        instance.other_titles = validated_data.get('other_titles', instance.other_titles)
+        instance.connect = validated_data.get('connect', instance.connect)
+        instance.save()
+        return instance
+
 
 

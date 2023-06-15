@@ -35,9 +35,7 @@ class CreateListView(mixins.CreateModelMixin,
         return self.list(request, *args, **kwargs)
 
 
-class GetRetrieveView(mixins.RetrieveModelMixin,
-                         mixins.UpdateModelMixin,
-                         generics.GenericAPIView):
+class GetRetrieveView(RetrieveUpdateAPIView):
 
     queryset = Pereval.objects.all()
     serializer_class = PerevalSerializer
@@ -46,7 +44,7 @@ class GetRetrieveView(mixins.RetrieveModelMixin,
 
     def patch(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer = self.get_serializer(data=request.data, instance=instance)
         if serializer.is_valid():
             if instance.status != 'new':
                 raise ValidationError('Статус не "new"')
