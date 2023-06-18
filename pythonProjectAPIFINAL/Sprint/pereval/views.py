@@ -1,3 +1,4 @@
+import django_filters
 from rest_framework import viewsets
 
 from rest_framework.exceptions import ValidationError
@@ -7,6 +8,7 @@ from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework import generics
 from rest_framework import mixins
 
+from .filters import PerevalFilter
 from .serializers import *
 from .models import *
 
@@ -18,6 +20,9 @@ class PerevalViewSet(viewsets.ModelViewSet):
 class PerevalListView(ListAPIView):
     queryset = Pereval.objects.all()
     serializer_class = PerevalSerializer
+    filterset_class = PerevalFilter
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+
 
 
 class CreateListView(mixins.CreateModelMixin,
@@ -26,6 +31,8 @@ class CreateListView(mixins.CreateModelMixin,
 
     queryset = Pereval.objects.all()
     serializer_class = PerevalSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = ["user__email"]
 
 
     def post(self, request, *args, **kwargs):
