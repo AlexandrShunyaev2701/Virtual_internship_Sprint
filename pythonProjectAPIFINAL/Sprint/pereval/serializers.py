@@ -1,6 +1,6 @@
 from .models import *
 from rest_framework import serializers
-
+from rest_framework.serializers import ValidationError
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -77,6 +77,29 @@ class PerevalSerializer(serializers.ModelSerializer):
         instance.connect = validated_data.get('connect', instance.connect)
         instance.save()
         return instance
+
+    def validate(self, attrs):
+        user_data = attrs.get('user')
+        if not user_data:
+            raise ValidationError("User data is missing.")
+
+        if self.instance:
+            user = self.instance.user
+        else:
+            try:
+                user = User.objects.get(email=user_data.get('email'))
+            except User.DoesNotExist:
+                user = None
+
+        if user is not None:
+            if user.first_name != user_data.get('first_name') or \
+                    user.last_name != user_data.get('last_name') or user.surname != user_data.get('surname') or \
+                    user.phone != user_data.get('phone'):
+                raise ValidationError("Информация не может быть изменена")
+
+        super().validate(attrs)
+
+        return attrs
 
 
 
