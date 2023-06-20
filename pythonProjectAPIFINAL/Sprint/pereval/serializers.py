@@ -1,7 +1,7 @@
 from .models import *
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -35,7 +35,7 @@ class LevelSerializer(serializers.ModelSerializer):
             'winter', 'summer', 'autumn', 'spring'
         ]
 
-class PerevalSerializer(serializers.ModelSerializer):
+class PerevalSerializer(WritableNestedModelSerializer):
     user = UserSerializer()
     coord = CoordsSerializer()
     level = LevelSerializer()
@@ -65,18 +65,6 @@ class PerevalSerializer(serializers.ModelSerializer):
         pereval = Pereval.objects.create(**validated_data, user=user, coord=coord, level=level, images=images)
         return pereval
 
-    def update(self, instance, validated_data):
-        instance.user = validated_data.get(Pereval.user, instance.user)
-        instance.coord = validated_data.get(Pereval.coord, instance.coord)
-        instance.level = validated_data.get(Pereval.level, instance.level)
-        instance.images = validated_data.get(Pereval.images, instance.images)
-        instance.status = validated_data.get('status', instance.status)
-        instance.beauty_title = validated_data.get('beauty_title', instance.beauty_title)
-        instance.title = validated_data.get('title', instance.title)
-        instance.other_titles = validated_data.get('other_titles', instance.other_titles)
-        instance.connect = validated_data.get('connect', instance.connect)
-        instance.save()
-        return instance
 
     def validate(self, attrs):
         user_data = attrs.get('user')
